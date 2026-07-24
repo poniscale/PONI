@@ -1308,12 +1308,21 @@
             animateCounter("count2", 18500, "+件");
             animateCounter("count3", 99, "%信賴");
 
-            try {
-                google.script.run
-                    .withSuccessHandler(function (realViews) { animateCounter("count-views", realViews, " 次"); })
-                    .withFailureHandler(function () { document.getElementById("count-views").innerText = "0 次"; })
-                    .getAndIncrementViews();
-            } catch (e) { }
+        // 請將下方的網址換成你剛部署的 Apps Script Web App URL
+        const COUNT_API_URL = 'https://script.google.com/macros/s/AKfycbxBNKydc11ir8x1U_Wg7t28mp2LFFHdD0g8bvpsw3axiUKK2ZlNbtciH4Cr-VtfFLXH5A/exec';
+
+        fetch(COUNT_API_URL)
+        .then(response => response.json())
+        .then(data => {
+            if (data && typeof data.views === 'number') {
+            animateCounter("count-views", data.views, " 次");
+            } else {
+            document.getElementById("count-views").innerText = "載入失敗";
+            }
+        })
+        .catch(() => {
+            document.getElementById("count-views").innerText = "0 次";
+        });
 
             filterAndRender();
         });
@@ -1498,7 +1507,7 @@
                 submitBtn.disabled = true;
                 submitBtn.innerText = '傳送中...';
 
-                const scriptURL = 'https://script.google.com/macros/s/AKfycbwN2FpsroUjKY9Ic5OkMWSUCTLe2dVjCn207Z2k9M7CnkgQ6fFRvUxO9DF0s1NLCWMZXQ/exec';
+                const scriptURL = 'https://script.google.com/macros/s/AKfycbxBNKydc11ir8x1U_Wg7t28mp2LFFHdD0g8bvpsw3axiUKK2ZlNbtciH4Cr-VtfFLXH5A/exec';
 
                 try {
                     const response = await fetch(scriptURL, {
